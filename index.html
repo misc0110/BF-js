@@ -1,0 +1,104 @@
+<html>
+<head>
+<script src="bf.js" type="text/javascript"></script>
+<style type="text/css">
+  table {
+      border-collapse: collapse;
+      font-family: monospace;
+      font-size: 150%;
+  }
+
+  .band tr td, .source tr td {
+    border: 1px solid #e0e0e0;
+    padding: 6px;
+  }
+  
+  .source tr th {
+    height: 1.5em;
+  }
+  
+  .band tr td {
+    width: 3em;
+    text-align: right;
+  }
+  
+  .source {
+  
+  }
+  
+  .output tr th {
+    font-weight: bold;
+    text-align: right;
+  }
+  .output tr td {
+    color: #333;
+    padding: 4px;
+    width: 2em;
+    text-align: right;
+  }
+  
+  .bf-arith {
+  }
+  .bf-io {
+    color: red;
+  }
+  .bf-loop {
+    color: green;
+    font-weight: bold;
+  }
+  .bf-band {
+    color: blue;
+  }
+  
+  fieldset {
+    border: 1px solid #ddd;
+  }
+  legend {
+    color: #666;
+  }
+  
+  button {
+    border: 1px solid #aaa;
+    background-color: #fff;
+    padding: 6px 16px;
+    border-radius: 3px;
+    margin: 8px;
+    font-weight: bold;
+  }
+  
+  input {
+    border: 1px solid #666;
+    border-radius: 3px;
+    padding: 6px;
+    margin: 4px;
+    font-family: monospace;
+    width: 100%;
+  }
+  
+</style>
+</head>
+<body>
+
+<input type="text" id="prog" value="+++[->+++<]" onkeyup="BF.start(document.getElementById('prog').value)"></input>
+<br />
+<button onclick="BF.start(document.getElementById('prog').value)">&#x21bb; Reset</button>
+<button onclick="BF.step()">&#10704; Step</button>
+<button onclick="BF.run()">&#9658; Run</button>
+<br /><br />
+<fieldset>
+ <legend>Memory</legend>
+<div id='band'></div>
+</fieldset>
+<br />
+<fieldset>
+<legend>Program</legend>
+<div id='source'></div>
+</fieldset>
+<br />
+<fieldset>
+<legend>Output</legend>
+<div id='out'></div>
+</fieldset>
+
+</body>
+</html>

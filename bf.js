@@ -20,21 +20,20 @@ var BF = new function() {
         BF.output();
     };
     
-    this.displayBand = function() {
-        var band = document.getElementById('band');
-        var html = "<table class='band'>";
+    this.formatTable = function(array, max_len, css_class, cb_head, cb_body) {
+        var html = "<table class='" + css_class + "'>";
 
         var lines = [];
-        var linec = Math.ceil(BF.band.length / BF.max_width_memory);
+        var linec = Math.ceil(array.length / max_len);
         
         for(var l = 0; l < linec * 2; l++) {
           lines.push("<tr>");   
         }
         
-        for(var i = 0; i < BF.band.length; i++) {
-          idx = Math.floor(i / BF.max_width_memory) * 2;
-          lines[idx] += "<th>" + (i == BF.band_ptr ? "&#x25BC;" : "") + "</th>";
-          lines[idx + 1] += "<td>" + BF.band[i] + "</td>";
+        for(var i = 0; i < array.length; i++) {
+          idx = Math.floor(i / max_len) * 2;
+          lines[idx] += "<th>" + cb_head(i) + "</th>";
+          lines[idx + 1] += "<td>" + cb_body(i) + "</td>";
         }
                 
         for(var l = 0; l < linec * 2; l++) {
@@ -42,31 +41,27 @@ var BF = new function() {
         }        
         
         html += "</table>";
+        return html;
+    };
+    
+    this.displayBand = function() {
+        var band = document.getElementById('band');
+        var html = BF.formatTable(BF.band, BF.max_width_memory, "band", function(i) { 
+            return i == BF.band_ptr ? "&#x25BC;" : "";
+        }, function(i) { 
+            return BF.band[i]; 
+        });
         band.innerHTML = html;        
     };
     
     this.displaySource = function() {
         var src = document.getElementById('source');
-        var html = "<table class='source'>";
+        var html = BF.formatTable(BF.prog, BF.max_width_prog, "source", function(i) { 
+            return i == BF.ip ? "&#x25BC;" : "";
+        }, function(i) { 
+            return BF.syntaxHighlight(BF.prog[i]); 
+        });
         
-        var lines = [];
-        var linec = Math.ceil(BF.prog.length / BF.max_width_prog);
-        
-        for(var l = 0; l < linec * 2; l++) {
-            lines.push("<tr>");            
-        }        
-        
-        for(var i = 0; i < BF.prog.length; i++) {
-          idx = Math.floor(i / BF.max_width_prog) * 2;
-          lines[idx] += "<th>" + (i == BF.ip ? "&#x25BC;" : "") + "</th>";
-          lines[idx + 1] += "<td>" + BF.syntaxHighlight(BF.prog[i]) + "</td>";
-        }
-        
-        for(var l = 0; l < linec * 2; l++) {
-            html += lines[l] + "</tr>";            
-        }        
-        
-        html += "</table>";
         src.innerHTML = html;        
     };
     
@@ -141,6 +136,9 @@ var BF = new function() {
                   if(BF.prog[BF.ip] == '[') level++;  
                 }
                 BF.ip++;
+                break;
+            default:
+                if(BF.ip < BF.prog.length - 1) BF.ip++;
                 break;
         }
         

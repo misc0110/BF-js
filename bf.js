@@ -89,17 +89,21 @@ var BF = new function() {
     };
     
     this.step = function() {
+        if(BF.prog == null) {
+          alert("You must load a program first");
+          return;
+        }
         switch(BF.prog[BF.ip]) {
             case '+':
-                BF.band[BF.band_ptr]++;
+                BF.band[BF.band_ptr] = (BF.band[BF.band_ptr] + 1) % 256;
                 BF.ip++;
                 break;
             case '-':
-                BF.band[BF.band_ptr]--;
+                BF.band[BF.band_ptr] = (BF.band[BF.band_ptr] + 255) % 256;
                 BF.ip++;
                 break;
             case '<':
-                BF.band_ptr--;
+                if(BF.band_ptr > 0) BF.band_ptr--;
                 BF.ip++;
                 break;
             case '>':
@@ -121,6 +125,10 @@ var BF = new function() {
                   var level = 0;
                   while(!(level == -1 && BF.prog[BF.ip] == ']')) {
                     BF.ip++;
+                    if(BF.ip >= BF.prog.length - 1) {
+                        BF.ip--;
+                        break;
+                    }
                     if(BF.prog[BF.ip] == ']') level--;
                     if(BF.prog[BF.ip] == '[') level++;
                   }
@@ -132,6 +140,10 @@ var BF = new function() {
                 var level = 0;
                 while(!(level == 1 && BF.prog[BF.ip + 1] == '[')) {
                   BF.ip--;   
+                  if(BF.ip <= -1) {
+                      BF.ip = BF.prog.length - 2;
+                      break;
+                  }
                   if(BF.prog[BF.ip] == ']') level--;
                   if(BF.prog[BF.ip] == '[') level++;  
                 }

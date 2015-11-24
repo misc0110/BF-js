@@ -5,6 +5,7 @@ var BF = new function() {
     this.band = []
     this.band_ptr = 0;
     this.out = [];
+    this.brackets = {}
     
     this.max_width_prog = 20;
     this.max_width_memory = 7;
@@ -15,6 +16,11 @@ var BF = new function() {
         BF.band_ptr = 0;
         BF.band = [ 0 ];
         BF.out = [];
+        if(!BF.parseBrackets()) {
+            alert("Could not parse program!");
+            BF.prog = null; 
+            return;
+        }
         BF.displayBand();
         BF.displaySource();
         BF.output();
@@ -88,6 +94,27 @@ var BF = new function() {
        return "<span class='" + cl + "'>" + c + "</span>";
     };
     
+    this.parseBrackets = function() {
+      BF.brackets = {};
+      var br = {};
+      var level = 0;
+      for(var i = 0; i < BF.prog.length; i++) {
+        if(BF.prog[i] == '[') {
+            br[level] = i;
+            level++;  
+        }
+        else if(BF.prog[i] == ']') {
+           level--;
+           if(level < 0) {
+               return false;
+           }
+           BF.brackets[i] = br[level];
+           BF.brackets[br[level]] = i;
+        }
+      }
+      return true;
+    };
+    
     this.step = function() {
         if(BF.prog == null) {
           alert("You must load a program first");
@@ -121,33 +148,12 @@ var BF = new function() {
                 break;
             case '[':
                 if(BF.band[BF.band_ptr] == 0) {
-                  // find matching ]
-                  var level = 0;
-                  while(!(level == -1 && BF.prog[BF.ip] == ']')) {
-                    BF.ip++;
-                    if(BF.ip >= BF.prog.length - 1) {
-                        BF.ip--;
-                        break;
-                    }
-                    if(BF.prog[BF.ip] == ']') level--;
-                    if(BF.prog[BF.ip] == '[') level++;
-                  }
+                  BF.ip = BF.brackets[BF.ip];
                 }
                 BF.ip++;
                 break;
             case ']':
-                // find matching [
-                var level = 0;
-                while(!(level == 1 && BF.prog[BF.ip + 1] == '[')) {
-                  BF.ip--;   
-                  if(BF.ip <= -1) {
-                      BF.ip = BF.prog.length - 2;
-                      break;
-                  }
-                  if(BF.prog[BF.ip] == ']') level--;
-                  if(BF.prog[BF.ip] == '[') level++;  
-                }
-                BF.ip++;
+                BF.ip = BF.brackets[BF.ip];
                 break;
             default:
                 if(BF.ip < BF.prog.length - 1) BF.ip++;
@@ -163,7 +169,14 @@ var BF = new function() {
           alert("You must load a program first");
           return;
         }
-        while(BF.ip < BF.prog.length - 1) BF.step();
+        BF.stepAll();
+    };
+    
+    this.stepAll = function() {
+        if(BF.ip != BF.prog.length - 1) {
+          BF.step();
+          window.setTimeout(BF.stepAll, 10);
+        }
     };
     
     this.output = function(c) {

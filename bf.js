@@ -159,6 +159,10 @@ var BF = new function() {
     };
     
     this.run = function() {
+        if(BF.prog == null) {
+          alert("You must load a program first");
+          return;
+        }
         while(BF.ip < BF.prog.length - 1) BF.step();
     };
     

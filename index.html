@@ -52,6 +52,7 @@
   
   fieldset {
     border: 1px solid #ddd;
+    border-radius: 3px;
   }
   legend {
     color: #666;
@@ -76,12 +77,17 @@
   }
   
 </style>
+<script type="text/javascript">
+function load() {
+  BF.start(document.getElementById('prog').value);
+}
+</script>
 </head>
-<body>
+<body onload="load()">
 
-<input type="text" id="prog" value="+++[->+++<]" onkeyup="BF.start(document.getElementById('prog').value)"></input>
+<input type="text" id="prog" value="+++[->+++<]>." onkeyup="BF.start(document.getElementById('prog').value)"></input>
 <br />
-<button onclick="BF.start(document.getElementById('prog').value)">&#x21bb; Reset</button>
+<button onclick="load();">&#x21bb; Reset</button>
 <button onclick="BF.step()">&#10704; Step</button>
 <button onclick="BF.run()">&#9658; Run</button>
 <br /><br />

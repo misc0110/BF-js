@@ -11,7 +11,7 @@ var BF = new function() {
     this.max_width_memory = 7;
     
     this.start = function(prog) {
-        BF.prog = prog + " ";
+        BF.prog = prog.replace(/([^\.,<>\[\]\+\-])/g, "") + " ";
         BF.ip = 0;
         BF.band_ptr = 0;
         BF.band = [ 0 ];
@@ -186,7 +186,7 @@ var BF = new function() {
         var line1 = "<tr>";
         var line2 = "<tr>";
         for(var i = 0; i < BF.out.length; i++) {
-          line1 += "<th>" + (BF.out[i] >= 32 && BF.out[i] <= 126 ? String.fromCharCode(BF.out[i]) : "<span class='chr-err'>?</span>") + "</th>";
+          line1 += "<th>" + (BF.out[i] >= 32 && BF.out[i] <= 126 ? String.fromCharCode(BF.out[i]) : BF.out[i] == 10 ? "\\n" : "<span class='chr-err'>?</span>") + "</th>";
           line2 += "<td>" + BF.out[i] + "</td>";
         }
         line1 += "</tr>";

@@ -143,7 +143,7 @@ var BF = new function() {
                 BF.ip++;
                 break;
             case ',':
-                BF.band[BF.band_ptr] = prompt("Enter value:", 0);
+                BF.band[BF.band_ptr] = parseInt(prompt("Enter value:", 0));
                 BF.ip++;
                 break;
             case '[':
